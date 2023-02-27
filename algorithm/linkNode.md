@@ -132,18 +132,18 @@
    >
    >   ```c++
    >   ListNode* reverseKGroup(ListNode* head, int k) {
-   >           if(!head) return nullptr;
-   >           ListNode* a = head;
-   >           ListNode* b = head;
-   >           for(int i=0;i<k;i++){
-   >               if(!b)
-   >                   return head;
-   >               b = b->next;
-   >           }
-   >           ListNode* newHead = reverseList(a,b);
-   >           a->next = reverseKGroup(b,k);
-   >           return newHead;
+   >       if(!head) return nullptr;
+   >       ListNode* a = head;
+   >       ListNode* b = head;
+   >       for(int i=0;i<k;i++){
+   >           if(!b)
+   >               return head;
+   >           b = b->next;
    >       }
+   >       ListNode* newHead = reverseList(a,b);
+   >       a->next = reverseKGroup(b,k);
+   >       return newHead;
+   >   }
    >   
    >   ListNode* reverseList(ListNode* head, ListNode* tail){
    >       ListNode* pre = nullptr;
@@ -162,26 +162,26 @@
    >
    >   ```c++
    >   ListNode* reverseKGroup(ListNode* head, int k) {
-   >           ListNode* hair = new ListNode();
-   >           hair->next = head;
-   >           ListNode* pre = hair;
-   >           while(head){
-   >               ListNode* tail = pre;
-   >               for(int i=0;i<k;i++){
-   >                   tail = tail->next;
-   >                   if(!tail){
-   >                       return hair->next;
-   >                   }
+   >       ListNode* hair = new ListNode();
+   >       hair->next = head;
+   >       ListNode* pre = hair;
+   >       while(head){
+   >           ListNode* tail = pre;
+   >           for(int i=0;i<k;i++){
+   >               tail = tail->next;
+   >               if(!tail){
+   >                   return hair->next;
    >               }
-   >               ListNode* nxt = tail->next;
-   >               tie(head,tail) = reverseList(head,tail);
-   >               pre->next = head;
-   >               tail->next = nxt;
-   >               pre = tail;
-   >               head = tail->next;
    >           }
-   >           return hair->next;
+   >           ListNode* nxt = tail->next;
+   >           tie(head,tail) = reverseList(head,tail);
+   >           pre->next = head;
+   >           tail->next = nxt;
+   >           pre = tail;
+   >           head = tail->next;
    >       }
+   >       return hair->next;
+   >   }
    >   
    >   pair<ListNode*, ListNode*> reverseList(ListNode* head, ListNode* tail){
    >       ListNode* pre = tail->next;
@@ -209,10 +209,10 @@
    >
    >   ```c++
    >   ListNode* left;
-   >       bool isPalindrome(ListNode* head) {
-   >           left = head;
-   >           return traverse(head);
-   >       }
+   >   bool isPalindrome(ListNode* head) {
+   >       left = head;
+   >       return traverse(head);
+   >   }
    >   
    >   bool traverse(ListNode* right){
    >       if(!right)
