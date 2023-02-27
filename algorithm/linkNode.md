@@ -79,7 +79,7 @@
    >
    >   注意，$n_1$->next = nullptr
    >
-   >   ![image-20230226102948289](C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230226102948289.png)
+   >   ![image-20230226102948289](https://worldstarted-1311451885.cos.ap-chengdu.myqcloud.com/img/image-20230226102948289.png)
    >
    >   ```c++
    >   ListNode* reverse(ListNode* head){
@@ -252,7 +252,7 @@
    >
    > `思路`
    >
-   > <img src="C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230224102047394.png" alt="image-20230224102047394" style="zoom:50%;" />
+   > <img src="https://worldstarted-1311451885.cos.ap-chengdu.myqcloud.com/img/image-20230224102047394.png" alt="image-20230224102047394" style="zoom:50%;" />
    >
    > 设总长度为len，则倒数第n个节点就是正数第len-n+1个节点，但无法知道总长度
    >
@@ -272,9 +272,9 @@
    >
    > 综上，只需要p2走1，p1走2
    >
-   > <img src="C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230224144121877.png" alt="image-20230224144121877" style="zoom:50%;" />
+   > <img src="https://worldstarted-1311451885.cos.ap-chengdu.myqcloud.com/img/image-20230224144121877.png" alt="image-20230224144121877" style="zoom:50%;" />
    >
-   > <img src="C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230224144141313.png" alt="image-20230224144141313" style="zoom:50%;" />
+   > <img src="https://worldstarted-1311451885.cos.ap-chengdu.myqcloud.com/img/image-20230224144141313.png" alt="image-20230224144141313" style="zoom:50%;" />
 
 3. [环形链表](https://leetcode.cn/problems/linked-list-cycle/)
 
@@ -296,7 +296,7 @@
    >
    > 假设有两个指针，slow，fast，速度比1:2，当两者相遇时，若slow走了k步，则fast走了2k步，一圈的长度为k，假设起点到相遇节点距离为s，则入环节点到相遇节点距离为k-s
    >
-   > <img src="C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230224191007683.png" alt="image-20230224191007683" style="zoom:50%;" />
+   > <img src="https://worldstarted-1311451885.cos.ap-chengdu.myqcloud.com/img/image-20230224191007683.png" alt="image-20230224191007683" style="zoom:50%;" />
    >
    > ```c++
    > ListNode *detectCycle(ListNode *head) {
