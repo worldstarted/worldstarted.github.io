@@ -1,6 +1,8 @@
 # 链表
 
-## 1. 合并有序链表
+## 一、 操作链表
+
+### a. 合并有序链表
 
 1. [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)
 
@@ -43,7 +45,7 @@
    >
    > - 
 
-## 2. 链表分解
+### b. 链表分解
 
 1.  [分隔链表](https://leetcode.cn/problems/partition-list/)
 
@@ -57,9 +59,192 @@
    >
    
 
+### c. 反转链表
 
+1. [反转链表](https://leetcode.cn/problems/reverse-linked-list/)
 
-## 3. 操作链表元素
+   > 给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
+   >
+   > `思路`
+   >
+   > - 迭代
+   >
+   >   交换元素指针指向
+   >
+   > - 递归
+   >
+   >   递归，从后往前，所以是后面的先排好
+   >
+   >   假设k+1都排好了，对于k，希望k->next->next = k
+   >
+   >   注意，$n_1$->next = nullptr
+   >
+   >   ![image-20230226102948289](C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230226102948289.png)
+   >
+   >   ```c++
+   >   ListNode* reverse(ListNode* head){
+   >       if(!head || !head->next)	return head;
+   >       ListNode* tep = reverse(head->next);
+   >       head->next->next = head;
+   >       head->next = nullptr;
+   >       return tep;
+   >   }
+   >   ```
+   >
+
+2. [反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
+
+   > 给你单链表的头指针 head 和两个整数 left 和 right ，其中 left <= right 。请你反转从位置 left 到位置 right 的链表节点，返回 反转后的链表 。
+   >
+   > `思路`
+   >
+   > 找到left和right的区间，先断开和之前的链接，再当作独立的链表反转，最后链接上去
+   >
+   > ```c++
+   > ListNode* reverseBetween(ListNode* head, int left, int right) {
+   >         ListNode* sor = new ListNode();
+   >         sor->next = head;
+   >         ListNode* pre = sor; //pre永远指向反转区域的第一个节点的前一个节点
+   >         for(int i=0;i<left-1;i++)
+   >             pre = pre->next;
+   >         ListNode* cur = pre->next;//cur指向反转区域的第一个节点	
+   >         for(int i=0;i<right-left;i++){
+   >             ListNode* nxt = cur->next;//cur的下一个节点
+   >             cur->next = nxt->next;//断开原来链接，换成下下个
+   >             nxt->next = pre->next;//将c断开的节点链接反转区域的头节点
+   >             pre->next = nxt;//反转区域的头节点和它的前一个节点重新链接
+   >         }
+   >         return sor->next;
+   > }
+   > ```
+
+3. **[K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)**
+
+   > 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+   > k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+   > 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+   >
+   > `思路`
+   >
+   > 每个区间先反转，然后递归反转
+   >
+   > - 代码一，递归
+   >
+   >   ```c++
+   >   ListNode* reverseKGroup(ListNode* head, int k) {
+   >           if(!head) return nullptr;
+   >           ListNode* a = head;
+   >           ListNode* b = head;
+   >           for(int i=0;i<k;i++){
+   >               if(!b)
+   >                   return head;
+   >               b = b->next;
+   >           }
+   >           ListNode* newHead = reverseList(a,b);
+   >           a->next = reverseKGroup(b,k);
+   >           return newHead;
+   >       }
+   >   
+   >   ListNode* reverseList(ListNode* head, ListNode* tail){
+   >       ListNode* pre = nullptr;
+   >       ListNode* p = head;
+   >       while(p!=tail){
+   >           ListNode* tep = p->next;
+   >           p->next = pre;
+   >           pre = p;
+   >           p = tep;
+   >       }
+   >       return pre;
+   >   }
+   >   ```
+   >
+   > - 代码二，迭代
+   >
+   >   ```c++
+   >   ListNode* reverseKGroup(ListNode* head, int k) {
+   >           ListNode* hair = new ListNode();
+   >           hair->next = head;
+   >           ListNode* pre = hair;
+   >           while(head){
+   >               ListNode* tail = pre;
+   >               for(int i=0;i<k;i++){
+   >                   tail = tail->next;
+   >                   if(!tail){
+   >                       return hair->next;
+   >                   }
+   >               }
+   >               ListNode* nxt = tail->next;
+   >               tie(head,tail) = reverseList(head,tail);
+   >               pre->next = head;
+   >               tail->next = nxt;
+   >               pre = tail;
+   >               head = tail->next;
+   >           }
+   >           return hair->next;
+   >       }
+   >   
+   >   pair<ListNode*, ListNode*> reverseList(ListNode* head, ListNode* tail){
+   >       ListNode* pre = tail->next;
+   >       ListNode* p = head;
+   >       while(pre != tail ){
+   >           ListNode* tep = p->next;
+   >           p->next = pre;
+   >           pre = p;
+   >           p = tep;
+   >       }
+   >       return {tail, head};
+   >   }
+   >   ```
+   >
+   >   
+   >
+
+4. **[回文链表](https://leetcode.cn/problems/palindrome-linked-list/)**
+
+   > 给你一个单链表的头节点 `head` ，请你判断该链表是否为回文链表。如果是，返回 `true` ；否则，返回 `false` 
+   >
+   > `思路`
+   >
+   > - 回文的本质是，从中心向两边扩散，但由于是单链表，只能伪造双指针，可以结合后序遍历
+   >
+   >   ```c++
+   >   ListNode* left;
+   >       bool isPalindrome(ListNode* head) {
+   >           left = head;
+   >           return traverse(head);
+   >       }
+   >   
+   >   bool traverse(ListNode* right){
+   >       if(!right)
+   >           return 1;
+   >       bool ans = traverse(right->next);
+   >       ans = ans && (left->val==right->val);
+   >       left = left->next;
+   >       return ans;
+   >   }
+   >   ```
+   >
+   > - 装入数组，按传统的方法，从两边往中心比较
+   >
+   >   ```c++
+   >   bool isPalindrome(ListNode* head) {
+   >       vector<int> vals;
+   >       while (head != nullptr) {
+   >           vals.emplace_back(head->val);
+   >           head = head->next;
+   >       }
+   >       for (int i = 0, j = (int)vals.size() - 1; i < j; ++i, --j) {
+   >           if (vals[i] != vals[j]) {
+   >               return false;
+   >           }
+   >       }
+   >       return true;
+   >   }
+   >   ```
+   >
+   > - 反转再比较
+
+## 二、操作链表元素
 
 1. [删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 
@@ -140,5 +325,11 @@
    >
    > `思路`
    >
-   > 
+   > 由于两链表长度不一，核心是消除长度差异。
+   >
+   > 两者从头跑，先跑到头的然后从另外一个的起点重新跑，如此，两者相遇时，便是相交节点。==交换路径==
+   >
+   > 证明如下：
+   >
+   > 对于链表A，从起点到相遇节点的距离为a，对于节点B，从起点到相遇节点的距离为b，相遇节点到终点的距离都为m，不妨假设B的长度大于A，则当A先跑完时，B的位置在b-a处，而此时A也从B起点出发，当A跑完b-a时，B跑完，从A开始，两者此时的链表长度相同。
 
