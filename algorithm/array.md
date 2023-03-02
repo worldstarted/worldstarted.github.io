@@ -19,18 +19,17 @@
    >    int slow = 0, fast = 0;
    >    while(fast<len){
    >        if(nums[slow]!=nums[fast]){
-   >            slow++;
-   >            nums[slow]=nums[fast];
+   >            nums[++slow]=nums[fast];
    >        }
    >        fast++;
    >    }
    >    return slow+1;
    >   }
    >   ```
-   >
-   > - 通法
-   >
-   >   ```c++
+   >   
+   >- 通法
+   > 
+   >  ```c++
    >   //如果是保留k位，对于前k个数字，可以直接保留，对于之后的每一个数字，只需要判断其与第k个是否相同，只有不相同，才可以保留
    >   int removeDuplicates(vector<int>& nums) {
    >       int idx = 0;
@@ -40,8 +39,8 @@
    >       }
    >       return idx;
    >   }
-   >   ```
-
+   >  ```
+   
 2. [删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/)
 
    > 给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使得出现次数超过两次的元素只出现两次 ，返回删除后数组的新长度。不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
@@ -122,3 +121,111 @@
    >
    >     
 
+## 二、左右指针
+
+1. [两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)
+
+   > 给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是numbers[index1] 和 numbers[index2] ，则 1 <= index1 < index2 <= numbers.length 。
+   > 以长度为 2 的整数数组 [index1, index2] 的形式返回这两个整数的下标 index1 和 index2。
+   > 你可以假设每个输入 只对应唯一的答案 ，而且你 不可以 重复使用相同的元素。
+   > 你所设计的解决方案必须只使用常量级的额外空间。
+   >
+   > `思路`
+   >
+   > 左右指针，如果和等于。返回，如果和大了，说明右边大了，左移，如果和小了，说明左边小了，右移。
+
+2. [盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
+
+   > 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+   > 找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+   > 返回容器可以储存的最大水量。
+   > 说明：你不能倾斜容器。
+   >
+   > `思路`
+   >
+   > 左指针，右指针，==长板向内，水平距离减少，总体积减少，短板向内，可能增大，可能减小==
+   >
+   > 所以，每次只需移动较短的即可。
+
+3. [搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/)
+
+   > 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+   > 每行的元素从左到右升序排列。
+   > 每列的元素从上到下升序排列。
+   >
+   > `思路`
+   >
+   > ==右上角==很特殊，往左，就是减小，往下，就是增大。
+
+4. [反转字符串](https://leetcode.cn/problems/reverse-string/)
+
+   > 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出。
+   > 不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。
+   >
+   > `思路`
+   >
+   > 左右指针，交换内容，左指针往右走，右指针往左走。
+
+5. [最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
+
+   > 给你一个字符串 `s`，找到 `s` 中最长的回文子串。
+   > 如果字符串的反序与原始字符串相同，则该字符串称为回文字符串。
+   >
+   > `思路`
+   >
+   > ==回文，中心向两边扩散==
+   >
+   > 分奇偶，然后向两边找，更新答案。
+
+## 三、前缀和
+
+1. [ 区域和检索 - 数组不可变](https://leetcode.cn/problems/range-sum-query-immutable/)
+
+   > 给定一个整数数组  nums，处理以下类型的多个查询:
+   > 计算索引 left 和 right （包含 left 和 right）之间的 nums 元素的 和 ，其中 left <= right
+   > 实现 NumArray 类：
+   > NumArray(int[] nums) 使用数组 nums 初始化对象
+   > int sumRange(int i, int j) 返回数组 nums 中索引 left 和 right 之间的元素的 总和 ，包含 left 和 right 两点（也就是 nums[left] + nums[left + 1] + ... + nums[right] )
+   >
+   > `思路`
+   >
+   > 再构造一个数组用来存储前缀和。
+
+2. [二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/)
+
+   > 给定一个二维矩阵 matrix，以下类型的多个请求：
+   > 计算其子矩形范围内元素的总和，该子矩阵的 左上角 为 (row1, col1) ，右下角 为 (row2, col2) 。
+   > 实现 NumMatrix 类：
+   > NumMatrix(int[][] matrix) 给定整数矩阵 matrix 进行初始化
+   > int sumRegion(int row1, int col1, int row2, int col2) 返回 左上角 (row1, col1) 、右下角 (row2, col2) 所描述的子矩阵的元素 总和 。
+   >
+   > `思路`
+   >
+   > - 同上，构建一个二维数组用来存储和，实质上，结果是一层层的加起来，还是一维前缀和的方法
+   >
+   > - 二位前缀和，这样子，取答案的时候，就是O(1)，观察发现，设二维矩阵前缀和为$f$，则
+   >   $$
+   >   f(i,j) = matrix[i][j]+f(i-1,j)+f(i,j-1)-f(i-1,j-1)
+   >   $$
+   >
+   >   ```c++
+   >   NumMatrix(vector<vector<int>>& matrix) {
+   >       for(int i=0;i<matrix.size();i++){
+   >           for(int j=0;j<matrix[0].size();j++){
+   >              //由于公式有i-1,j-1，所以为了方便计算，让sum矩阵的i,j比原矩阵大1
+   >               sum[i+1][j+1] = matrix[i][j]+sum[i+1][j]+sum[i][j+1]-sum[i][j];
+   >           }
+   >       }
+   >   }
+   >     
+   >   int sumRegion(int row1, int col1, int row2, int col2) {
+   >       // 注意现在，组成四块的是row1,col1,row2,col2,所以i,j要换成这些
+   >       return sum[row2+1][col2+1]+sum[row1][col1]-sum[row1][col2+1]-sum[row2+1][col1];
+   >   }
+   >   ```
+
+## 四、差分数组
+
+
+
+   
