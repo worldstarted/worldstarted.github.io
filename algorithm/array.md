@@ -204,9 +204,9 @@
    > - 同上，构建一个二维数组用来存储和，实质上，结果是一层层的加起来，还是一维前缀和的方法
    >
    > - 二位前缀和，这样子，取答案的时候，就是O(1)，观察发现，设二维矩阵前缀和为$f$，则
-   >   $$
+   >  $$
    >   f(i,j) = matrix[i][j]+f(i-1,j)+f(i,j-1)-f(i-1,j-1)
-   >   $$
+   >  $$
    >
    >   ```c++
    >   NumMatrix(vector<vector<int>>& matrix) {
@@ -226,6 +226,160 @@
 
 ## 四、差分数组
 
+1. [航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/)
 
+   > 这里有 n 个航班，它们分别从 1 到 n 进行编号。
+   > 有一份航班预订表 bookings ，表中第 i 条预订记录 bookings[i] = [firsti, lasti, seatsi] 意味着在从 firsti 到 lasti （包含 firsti 和 lasti ）的 每个航班 上预订了 seatsi 个座位。请你返回一个长度为 n 的数组 answer，里面的元素是每个航班预定的座位总数。
+   >
+   > `思路`
+   >
+   > - 模拟
+   >
+   > - 差分算法
+   >
+   >   区间加一个数，等价于，$diff[left] += val, diff[right+1] -= val$
+   >
+   >   ```java
+   >   public int[] corpFlightBookings(int[][] bookings, int n) {
+   >   	int [] ans = new int [n];
+   >       for(int[] each:bookings){
+   >       	ans[each[0]-1] += each[2];
+   >           if(each[1]<n){
+   >           	ans[each[1]] -= each[2];
+   >           }
+   >       }
+   >       for(int i=1;i<n;i++)
+   >       ans[i] += ans[i-1];
+   >       return ans;
+   >   ```
 
-   
+2. [拼车](https://leetcode.cn/problems/car-pooling/)
+
+   > 车上最初有 capacity 个空座位。车 只能 向一个方向行驶（也就是说，不允许掉头或改变方向）
+   >
+   > 给定整数 capacity 和一个数组 trips ,  trip[i] = [numPassengersi, fromi, toi] 表示第 i 次旅行有 numPassengersi 乘客，接他们和放他们的位置分别是 fromi 和 toi 。这些位置是从汽车的初始位置向东的公里数。
+   >
+   > 当且仅当你可以在所有给定的行程中接送所有乘客时，返回 true，否则请返回 false。
+   >
+   > `思路`
+   >
+   > 区间加减，差分数组
+   >
+   > ```java
+   > public boolean carPooling(int[][] trips, int capacity) {
+   >     int [] ans = new int[1005];
+   >     for(int[] trip:trips){
+   >         ans[trip[1]] += trip[0];
+   >         ans[trip[2]] -= trip[0];
+   >     }
+   >     if(ans[0]>capacity)
+   >         return false;
+   >     for(int i=1;i<1001;i++){
+   >         ans[i] += ans[i-1];
+   >         if(ans[i]>capacity)
+   >             return false;
+   >     }
+   >     return true;
+   > }
+   > ```
+
+## 五、二维数组的特殊操作
+
+1. [旋转图像](https://leetcode.cn/problems/rotate-image/)
+
+   > 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+   >
+   > 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+   >
+   > `思路`
+   >
+   > 参考[反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/)
+   >
+   > ```java
+   > class Solution {
+   >     public String reverseWords(String s) {
+   >         int left = 0;
+   >         int right = s.length()-1;
+   >         while(left<=right && s.charAt(left)==' ')
+   >             left++;
+   >         while(left<=right&&s.charAt(right)==' ')
+   >             right--;
+   >         Deque<String> dq = new ArrayDeque<String>();
+   >         StringBuilder sb = new StringBuilder();
+   >         while(left<=right){
+   >             char c = s.charAt(left);
+   >             if(sb.length()>0&&c==' '){
+   >                 dq.offerFirst(sb.toString());
+   >                 sb.setLength(0);
+   >             }
+   >             else if(c!=' ')
+   >                 sb.append(c);
+   >             left++;
+   >         }
+   >         dq.offerFirst(sb.toString());
+   >         return String.join(" ",dq);
+   >     }
+   > }
+   > ```
+   >
+   > 观察发现，先把矩阵的行做反转，之后再做转置
+
+2. [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
+
+   > 给你一个 `m` 行 `n` 列的矩阵 `matrix` ，请按照 **顺时针螺旋顺序** ，返回矩阵中的所有元素。
+   >
+   > `思路`
+   >
+   > ==模拟==，定义四个边界，逐一遍历
+   >
+   > ```java
+   > int colLeft = 0;
+   > int rowTop = 0;
+   > int colRgiht = matrix[0].length-1;
+   > int rowBottom = matrix.length-1;
+   > while(true){
+   >     // right
+   >     for(int j = colLeft;j<=colRgiht;j++){
+   >         ans.add(matrix[rowTop][j]);
+   >     }
+   >     rowTop++;
+   >     if(rowBottom<rowTop)
+   >         break;
+   > 
+   >     // down
+   >     for(int i=rowTop;i<=rowBottom;i++){
+   >         ans.add(matrix[i][colRgiht]);
+   >     }
+   >     colRgiht--;
+   >     if(colLeft>colRgiht)
+   >         break;
+   > 
+   >     //left
+   >     for(int j=colRgiht;j>=colLeft;j--){
+   >         ans.add(matrix[rowBottom][j]);
+   >     }
+   >     rowBottom--;
+   >     if(rowBottom<rowTop)
+   >         break;
+   > 
+   > 
+   >     //up
+   >     for(int i = rowBottom;i>=rowTop;i--){
+   >         ans.add(matrix[i][colLeft]);
+   >     }    
+   >     colLeft++;
+   >     if(colLeft>colRgiht)
+   >         break;
+   > }
+   > ```
+
+3. [螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
+
+   > 给你一个正整数 `n` ，生成一个包含 `1` 到 `n2` 所有元素，且元素按顺时针顺序螺旋排列的 `n x n` 正方形矩阵 `matrix` 。
+   >
+   > `思路`
+   >
+   > 和螺旋矩阵一样，按照右下左上，往里填数据就行
+
+## 六、滑动窗口
+
