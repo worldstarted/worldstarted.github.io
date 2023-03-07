@@ -383,3 +383,229 @@
 
 ## 六、滑动窗口
 
+```java
+//模板
+/* 滑动窗口算法框架 */
+void slidingWindow(string s) {
+    unordered_map<char, int> window;
+    
+    int left = 0, right = 0;
+    while (right < s.size()) {
+        // c 是将移入窗口的字符
+        char c = s[right];
+        // 增大窗口
+        right++;
+        // 进行窗口内数据的一系列更新
+        ...
+
+        /*** debug 输出的位置 ***/
+        // 注意在最终的解法代码中不要 print
+        // 因为 IO 操作很耗时，可能导致超时
+        printf("window: [%d, %d)\n", left, right);
+        /********************/
+        
+        // 判断左侧窗口是否要收缩
+        while (window needs shrink) {
+            // d 是将移出窗口的字符
+            char d = s[left];
+            // 缩小窗口
+            left++;
+            // 进行窗口内数据的一系列更新
+            ...
+        }
+    }
+}
+```
+
+1. [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+
+   > 给你一个字符串 `s` 、一个字符串 `t` 。返回 `s` 中涵盖 `t` 所有字符的最小子串。如果 `s` 中不存在涵盖 `t` 所有字符的子串，则返回空字符串 `""` 。
+   >
+   > `思路`
+   >
+   > 构建滑动窗口
+   >
+   > ```java
+   > class Solution {
+   >     public String minWindow(String s, String t) {
+   >         Map<Character,Integer> window = new HashMap<Character,Integer>();
+   >         Map<Character,Integer> need = new HashMap<Character,Integer>();
+   >         for(int i=0;i<t.length();i++){
+   >             need.put(t.charAt(i), need.getOrDefault(t.charAt(i),0)+1);
+   >         }
+   >         int left = 0;
+   >         int right = 0;
+   >         int valid = 0;
+   >         int start = 0, len = Integer.MAX_VALUE;
+   >         while(right<s.length()){
+   >             Character c = s.charAt(right);
+   >             right+=1;
+   >             if(need.containsKey(c)){//如果该字符是需要的
+   >                 window.put(c,window.getOrDefault(c,0)+1);//就在窗口里加入
+   >                 if(window.get(c).equals(need.get(c)))//判断窗口里的值和需要的值是否相同
+   >                     valid++;
+   >             }
+   >             while(valid == need.size()){
+   >                 if(right-left<len){//更新最小长度
+   >                     start = left;
+   >                     len = right-start;
+   >                 }
+   >                 Character d = s.charAt(left);
+   >                 left++;
+   >                 if(need.containsKey(d)){
+   >                     if(window.get(d).equals(need.get(d))){
+   >                         valid--;
+   >                     }
+   >                     window.replace(d,window.get(d)-1);
+   >                 }
+   >             }
+   >         }
+   >         return len == Integer.MAX_VALUE?"":s.substring(start,start+len);
+   >     }
+   > }
+   > ```
+
+2. [字符串的排列](https://leetcode.cn/problems/permutation-in-string/)
+
+   > 给你两个字符串 s1 和 s2 ，写一个函数来判断 s2 是否包含 s1 的排列。如果是，返回 true ；否则，返回 false 。
+   >
+   > 换句话说，s1 的排列之一是 s2 的 子串 。
+   >
+   > `思路`
+   >
+   > s1的排列之一是s2的子串，那么，在s2的某个窗口内，只要其字符数与s1的完全一致，由于是排列，所以一定满足子串的条件。
+   >
+   > 因此，就转化成了滑动窗口的问题。
+
+3. [找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
+
+   > 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+   >
+   > 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+   >
+   > `思路`
+   >
+   > 基本同上
+
+4. [无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+
+   > 给定一个字符串 `s` ，请你找出其中不含有重复字符的 **最长子串** 的长度。
+   >
+   > `思路`
+   >
+   > 收缩窗口的条件是什么？ 何时更新答案？
+   >
+   > - 收缩窗口要等到当前字符的数量大于一，说明有重复了
+   > - 只有没有重复的字符，才可以更新答案，也就是，窗口收缩后才能。
+
+5. [重复的DNA序列](https://leetcode.cn/problems/repeated-dna-sequences/)
+
+   > DNA序列 由一系列核苷酸组成，缩写为 'A', 'C', 'G' 和 'T'.。
+   >
+   > 例如，"ACGAATTCCG" 是一个 DNA序列 。
+   > 在研究 DNA 时，识别 DNA 中的重复序列非常有用。
+   >
+   > 给定一个表示 DNA序列 的字符串 s ，返回所有在 DNA 分子中出现不止一次的 长度为 10 的序列(子字符串)。你可以按 任意顺序 返回答案。
+   >
+   > `思路`
+
+6. [找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/)
+
+   > 给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回  -1 。
+   >
+   > `思路`
+   >
+   > RK算法
+   >
+   > ```java
+   > // Rabin-Karp 指纹字符串查找算法
+   > int rabinKarp(String txt, String pat) {
+   >     // 位数
+   >     int L = pat.length();
+   >     // 进制（只考虑 ASCII 编码）
+   >     int R = 256;
+   >     // 取一个比较大的素数作为求模的除数
+   >     long Q = 1658598167;
+   >     // R^(L - 1) 的结果
+   >     long RL = 1;
+   >     for (int i = 1; i <= L - 1; i++) {
+   >         // 计算过程中不断求模，避免溢出
+   >         RL = (RL * R) % Q;
+   >     }
+   >     // 计算模式串的哈希值，时间 O(L)
+   >     long patHash = 0;
+   >     for (int i = 0; i < pat.length(); i++) {
+   >         patHash = (R * patHash + pat.charAt(i)) % Q;
+   >     }
+   >     
+   >     // 滑动窗口中子字符串的哈希值
+   >     long windowHash = 0;
+   >     
+   >     // 滑动窗口代码框架，时间 O(N)
+   >     int left = 0, right = 0;
+   >     while (right < txt.length()) {
+   >         // 扩大窗口，移入字符
+   >         windowHash = ((R * windowHash) % Q + txt.charAt(right)) % Q;
+   >         right++;
+   > 
+   >         // 当子串的长度达到要求
+   >         if (right - left == L) {
+   >             // 根据哈希值判断是否匹配模式串
+   >             if (windowHash == patHash) {
+   >                 // 当前窗口中的子串哈希值等于模式串的哈希值
+   >                 // 还需进一步确认窗口子串是否真的和模式串相同，避免哈希冲突
+   >                 if (pat.equals(txt.substring(left, right))) {
+   >                     return left;
+   >                 }
+   >             }
+   >             // 缩小窗口，移出字符
+   >             windowHash = (windowHash - (txt.charAt(left) * RL) % Q + Q) % Q;
+   >             // X % Q == (X + Q) % Q 是一个模运算法则
+   >             // 因为 windowHash - (txt[left] * RL) % Q 可能是负数
+   >             // 所以额外再加一个 Q，保证 windowHash 不会是负数
+   > 
+   >             left++;
+   >         }
+   >     }
+   >     // 没有找到模式串
+   >     return -1;
+   > }
+   > 
+   > ```
+   >
+   > `KMP算法`
+   >
+   > ```java
+   > public int strStr(String haystack, String needle) {
+   >     int []next = new int[needle.length()];
+   >     int j=0,k=-1;
+   >     next[0]=-1;
+   >     while(j<needle.length()-1){
+   >         if(k==-1 || needle.charAt(j)==needle.charAt(k)){
+   >             next[++j] = ++k;
+   >         }else{
+   >             k = next[k];
+   >         }
+   >     }
+   >     int i=0;
+   >     j=0;
+   >     while(i<haystack.length()&&j<needle.length()){
+   >         if(j==-1||haystack.charAt(i)==needle.charAt(j)){
+   >             i++;
+   >             j++;
+   >         }else{
+   >             j = next[j];
+   >         }
+   >     }
+   >     if(j==needle.length()){
+   >         return i-j;
+   >     }return -1;
+   > }
+   > ```
+   >
+   > 
+
+## 七、二分搜索
+
+
+
