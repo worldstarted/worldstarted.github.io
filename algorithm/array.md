@@ -608,7 +608,7 @@ void slidingWindow(string s) {
 
 ## 七、二分搜索
 
-###  基本的二分搜索
+###  1 基本的二分搜索
 
 ```java
 int binarySearch(int[] nums, int target) {
@@ -636,7 +636,7 @@ while循环的<= 与 < 的问题
 >
 > <   right = len 搜索区间是 ` [ left, right )` 左闭，右开， 终止区间为 ` [ end, end ]`
 
-### 寻找左侧边界的二分搜索
+### 2 寻找左侧边界的二分搜索
 
 ```java
 int binarySearch(int nums[], int targer){
@@ -670,4 +670,144 @@ int binarySearch(int nums[], int targer){
 
    > 搜索区间为`[left,right)`，所以每次判断完nums[mid]后，应该变成`[left,mid)`或`[mid+1, right)`，在mid的左侧或右侧找
 
-3. 
+### 3 寻找右侧边界的二分搜索
+
+```java
+int right_bound(int[] nums, int target) {
+    int left = 0, right = nums.length;
+    
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {
+            left = mid + 1; // 注意
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid;
+        }
+    }
+    return left - 1; // 注意
+}
+```
+
+### 4 总结
+
+```java
+int binary_search(int[] nums, int target) {
+    int left = 0, right = nums.length - 1; 
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid - 1; 
+        } else if(nums[mid] == target) {
+            // 直接返回
+            return mid;
+        }
+    }
+    // 直接返回
+    return -1;
+}
+
+int left_bound(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid - 1;
+        } else if (nums[mid] == target) {
+            // 别返回，锁定左侧边界
+            right = mid - 1;
+        }
+    }
+    // 判断 target 是否存在于 nums 中
+    // 此时 target 比所有数都大，返回 -1
+    if (left == nums.length) return -1;
+    // 判断一下 nums[left] 是不是 target
+    return nums[left] == target ? left : -1;
+}
+
+int right_bound(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid - 1;
+        } else if (nums[mid] == target) {
+            // 别返回，锁定右侧边界
+            left = mid + 1;
+        }
+    }
+    // 此时 left - 1 索引越界
+    if (left - 1 < 0) return -1;
+    // 判断一下 nums[left] 是不是 target
+    return nums[left - 1] == target ? (left - 1) : -1;
+}
+
+```
+
+[在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+> 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+>
+> 如果数组中不存在目标值 target，返回 [-1, -1]。
+>
+> 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+>
+> `思路`
+>
+> 二分搜索左侧边界，然后遍历找右侧边界。
+
+## 八、随机选择
+
+[按权重随机选择](https://leetcode.cn/problems/random-pick-with-weight/)
+
+> 给你一个 下标从 0 开始 的正整数数组 w ，其中 w[i] 代表第 i 个下标的权重。
+>
+> 请你实现一个函数 pickIndex ，它可以 随机地 从范围 [0, w.length - 1] 内（含 0 和 w.length - 1）选出并返回一个下标。选取下标 i 的 概率 为 w[i] / sum(w) 。
+>
+> 例如，对于 w = [1, 3]，挑选下标 0 的概率为 1 / (1 + 3) = 0.25 （即，25%），而选取下标 1 的概率为 3 / (1 + 3) = 0.75（即，75%）。
+>
+> `思路`
+>
+> <img src="C:\Users\ldx\AppData\Roaming\Typora\typora-user-images\image-20230310161205871.png" alt="image-20230310161205871" style="zoom:50%;" />
+>
+> 通过前缀和模拟概率，在这种情况下， 随机在线段上投一个点，落在哪，就取其索引即可。
+>
+> ```java
+> private int[] presum ;
+> private Random rand = new Random();
+> 
+> public Solution(int[] w) {
+>     presum = new int [w.length+1];
+>     presum[0] = 0;
+>     for(int i=1;i<=w.length;i++){
+>         presum[i] = presum[i-1]+w[i-1];
+>     }
+> }
+> 
+> public int pickIndex() {
+>     int len = presum.length;
+>     int target = rand.nextInt(presum[len-1])+1;
+>     int left=0, right = len;
+>     while (left<right){
+>         int mid = left+ (right-left)/2;
+>         if(presum[mid]==target){
+>             right = mid;
+>         }else if(presum[mid]>target){
+>             right = mid;
+>         }else{
+>             left = mid+1;
+>         }
+>     }
+>     return left-1;
+> }
+> ```
+
+
+
