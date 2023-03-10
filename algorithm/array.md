@@ -26,20 +26,21 @@
    >    return slow+1;
    >   }
    >   ```
-   >   
-   >- 通法
-   > 
-   >  ```c++
+   >
+   > - 通法
+   >
+   >   ```c++
    >   //如果是保留k位，对于前k个数字，可以直接保留，对于之后的每一个数字，只需要判断其与第k个是否相同，只有不相同，才可以保留
-   >   int removeDuplicates(vector<int>& nums) {
-   >       int idx = 0;
-   >       for(auto each:nums){
-   >           if(idx<k || nums[idx-k] != each)
-   >               nums[idx++] = each;
-   >       }
-   >       return idx;
-   >   }
-   >  ```
+   >    int removeDuplicates(vector<int>& nums) {
+   >        int idx = 0;
+   >        for(auto each:nums){
+   >            if(idx<k || nums[idx-k] != each)
+   >                nums[idx++] = each;
+   >        }
+   >        return idx;
+   >    }
+   >   ```
+   >
    
 2. [删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/)
 
@@ -607,5 +608,66 @@ void slidingWindow(string s) {
 
 ## 七、二分搜索
 
+###  基本的二分搜索
 
+```java
+int binarySearch(int[] nums, int target) {
+    int left = 0; 
+    int right = nums.length - 1; // 注意
 
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target)
+            return mid; 
+        else if (nums[mid] < target)
+            left = mid + 1; // 注意
+        else if (nums[mid] > target)
+            right = mid - 1; // 注意
+    }
+    return -1;
+}
+```
+
+`注意`
+
+while循环的<= 与 < 的问题
+
+> <= right = len-1 搜索区间是`[ left, right ]` 左闭右闭   终止区间为空
+>
+> <   right = len 搜索区间是 ` [ left, right )` 左闭，右开， 终止区间为 ` [ end, end ]`
+
+### 寻找左侧边界的二分搜索
+
+```java
+int binarySearch(int nums[], int targer){
+    int left = 0;
+    int right = nums.length; // 注意
+    
+    while (left < right) { // 注意
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {
+            right = mid;
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid; // 注意
+        }
+    }
+    // 此时 target 比所有数都大，返回 -1
+    if (left == nums.length) return -1;
+    // 判断一下 nums[left] 是不是 target
+    return nums[left] == target ? left : -1;
+}
+```
+
+1. while` <` 而非` <=`
+
+   > right = nums.length，搜索区间为` [ left, right )`
+   >
+   > 终止条件， `[ left, left )`
+
+2. `left = mid+1`与`right = mid`
+
+   > 搜索区间为`[left,right)`，所以每次判断完nums[mid]后，应该变成`[left,mid)`或`[mid+1, right)`，在mid的左侧或右侧找
+
+3. 
