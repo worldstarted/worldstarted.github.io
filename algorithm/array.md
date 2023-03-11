@@ -809,5 +809,102 @@ int right_bound(int[] nums, int target) {
 > }
 > ```
 
+## 九、二分扩展
 
+1. [在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/)
 
+   > 传送带上的包裹必须在 days 天内从一个港口运送到另一个港口。
+   >
+   > 传送带上的第 i 个包裹的重量为 weights[i]。每一天，我们都会按给出重量（weights）的顺序往传送带上装载包裹。我们装载的重量不会超过船的最大运载重量。
+   >
+   > 返回能在 days 天内将传送带上的所有包裹送达的船的最低运载能力。
+   >
+   > `思路`
+   >
+   > 可以看到，超过最低运载能力x时，可以提前运完，低于x时，无法提前运完。
+   >
+   > 这转化成了一个二分问题。
+   >
+   > 左边界，所有货物中的最大值
+   >
+   > 右边界，所有货物的总和
+   >
+   > 判断标准，当前运载能力下，需要的天数与days之间的关系。
+   >
+   > ```java
+   > public int shipWithinDays(int[] weights, int days) {
+   >     int left = 0, right = 0;
+   >     for(int w:weights){
+   >         right += w;
+   >         left = Math.max(left, w);
+   >     }
+   >     while(left<right){
+   >         int mid = left + (right-left)/2;
+   >         int need = 1, cur = 0;
+   >         for(int w:weights){
+   >             if(cur+w>mid){//当天运载的货物超过运载能力mid
+   >                 need++;//加一天
+   >                 cur = 0;//重置运载货物数
+   >             }
+   >             cur += w;
+   >         }
+   >         if(need>days){
+   >             left = mid+1;
+   >         }else if(need<=days){//答案是找最少运载能力，所以是在寻找左边界
+   >             right = mid;
+   >         }
+   >     }
+   >     return left;
+   > }
+   > ```
+   >
+   > 
+
+2. [分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
+
+   > 给定一个非负整数数组 `nums` 和一个整数 `m` ，你需要将这个数组分成 `m` 个非空的连续子数组。设计一个算法使得这 `m` 个子数组各自和的最大值最小。
+   >
+   > `思路`
+   >
+   > ==二分+贪心==
+   >
+   > 关键在于连续，m次是固定的，子数组和是变化的
+   >
+   > 求的是子数组和的最大值里的最小值，这个子数组和的最大值，最小可以小到单个元素，最大可以到整个数组元素和
+   >
+   > 对其进行二分查找
+   >
+   > ```java
+   > public int splitArray(int[] nums, int k) {
+   >     int left = 0, right = 0;
+   >     for(int each:nums){
+   >         left = Math.max(each,left);
+   >         right += each;
+   >     }
+   >     while(left<right){
+   >         int mid = left+ (right-left)/2;
+   >         int need = 1, sum = 0;
+   >         for(int each:nums){
+   >             if(each+sum>mid){
+   >                 sum=0;
+   >                 need++;
+   >             }
+   >             sum+=each;
+   >         }
+   >         if(need<=k){
+   >             right = mid;
+   >         }else if(need>k){
+   >             left = mid+1;
+   >         }
+   >     }
+   >     return left;
+   > }
+   > ```
+   >
+   > ==动态规划==
+   >
+   > 「将数组分割为 *m* 段，求……」是动态规划题目常见的问法。
+   >
+   > 
+   
+   
