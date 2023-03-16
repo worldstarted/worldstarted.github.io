@@ -6,6 +6,8 @@
 
 Java中的关键字和修饰符
 
+
+
 ## 二、Java集合框架
 
 ArrayList、LinkedList、HashSet、HashMap，它们的实现原理和区别等
@@ -74,6 +76,14 @@ JDBC技术和SQL语言的基本概念和操作，以及如何使用PreparedState
 ## 七、Spring或Spring Boot
 
 核心组件和注解等
+
+
+
+## Java新特性
+
+### Java 10
+
+#### var
 
 
 
