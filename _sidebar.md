@@ -8,3 +8,4 @@
     * [Java 核心技术](/java/Java_Core_Tech.md)
     * [spring](/java/spring%206.md)
     * [Java突围之路](/java/Out_of_Java.md)
+    * [Java的一些问题](/java/some_questions.md)

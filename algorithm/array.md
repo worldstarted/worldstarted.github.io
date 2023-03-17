@@ -187,123 +187,46 @@
    > `思路`
    >
    > 可以看成田忌赛马，将两个数组都按升序排序，
-
-   ```java
-   int[] advantageCount(int[] nums1, int[] nums2) {
-       int n = nums1.length;
-       // 给 nums2 降序排序
-       PriorityQueue<int[]> maxpq = new PriorityQueue<>(
-           (int[] pair1, int[] pair2) -> { 
-               return pair2[1] - pair1[1];
-           }
-       );
-       for (int i = 0; i < n; i++) {
-           maxpq.offer(new int[]{i, nums2[i]});
-       }
-       // 给 nums1 升序排序
-       Arrays.sort(nums1);
-   
-       // nums1[left] 是最小值，nums1[right] 是最大值
-       int left = 0, right = n - 1;
-       int[] res = new int[n];
-   
-       while (!maxpq.isEmpty()) {
-           int[] pair = maxpq.poll();
-           // maxval 是 nums2 中的最大值，i 是对应索引
-           int i = pair[0], maxval = pair[1];
-           if (maxval < nums1[right]) {
-               // 如果 nums1[right] 能胜过 maxval，那就自己上
-               res[i] = nums1[right];
-               right--;
-           } else {
-               // 否则用最小值混一下，养精蓄锐
-               res[i] = nums1[left];
-               left++;
-           }
-       }
-       return res;
-   }
-   
-   ```
-
-   ```java
-   class Solution {
-       public int[] advantageCount(int[] nums1, int[] nums2) {
-           int n = nums1.length;
-           Integer[] idx1 = new Integer[n];
-           Integer[] idx2 = new Integer[n];
-           for (int i = 0; i < n; ++i) {
-               idx1[i] = i;
-               idx2[i] = i;
-           }
-           Arrays.sort(idx1, (i, j) -> nums1[i] - nums1[j]);
-           Arrays.sort(idx2, (i, j) -> nums2[i] - nums2[j]);
-   
-           int[] ans = new int[n];
-           int left = 0, right = n - 1;
-           for (int i = 0; i < n; ++i) {
-               if (nums1[idx1[i]] > nums2[idx2[left]]) {
-                   ans[idx2[left]] = nums1[idx1[i]];
-                   ++left;
-               } else {
-                   ans[idx2[right]] = nums1[idx1[i]];
-                   --right;
-               }
-           }
-           return ans;
-       }
-   }
-   
-   ```
-
-   ```java
-   class Solution {
-       public int[] advantageCount(int[] nums1, int[] nums2) {
-           int n = nums1.length;
-           TreeSet<Integer> tset = new TreeSet<>();
-           Map<Integer, Integer> map = new HashMap<>();
-           for (int x : nums1) {
-               map.put(x, map.getOrDefault(x, 0) + 1);
-               if (map.get(x) == 1) tset.add(x);
-           }
-           int[] ans = new int[n];
-           for (int i = 0; i < n; i++) {
-               Integer cur = tset.ceiling(nums2[i] + 1);
-               if (cur == null) cur = tset.ceiling(-1);
-               ans[i] = cur;
-               map.put(cur, map.get(cur) - 1);
-               if (map.get(cur) == 0) tset.remove(cur);
-           }
-           return ans;
-       }
-   }
-   ```
-
-   ```java
-   class Solution {
-       public int[] advantageCount(int[] nums1, int[] nums2) {
-           int n = nums1.length;
-           Map<Integer, List<Integer>> map = new HashMap<>();
-           for (int i = 0; i < n; i++) {
-               List<Integer> list = map.getOrDefault(nums2[i], new ArrayList<>());
-               list.add(i);
-               map.put(nums2[i], list);
-           }
-           Arrays.sort(nums1); Arrays.sort(nums2);
-           int[] ans = new int[n];
-           for (int l1 = 0, l2 = 0, r2 = n - 1; l1 < n; l1++) {
-               int t = nums1[l1] > nums2[l2] ? l2 : r2;
-               List<Integer> list = map.get(nums2[t]);
-               int idx = list.remove(list.size() - 1);
-               ans[idx] = nums1[l1];
-               if (t == l2) l2++;
-               else r2--;
-           }
-           return ans;
-       }
-   }
-   ```
-
+   >
+   > 对于num2的第一个元素，用num1的第一个元素去比较，会出现两种情况
+   >
+   > - num1>num2，就将两个元素都移除，num1的放到答案里
+   > - num1<=num2，将移除num1的元素
+   >
+   > 遍历结束条件是num1被遍历完
+   >
+   > 正确性在于
+   >
+   > - num1>num2，由于两个数组都是按照升序排列的，第一个元素是最小的，如果num1>num2，那么num1第一个以后的元素也大于num2
+   > - num1<=num2，由于第一个元素小于num2，只能不断往后找，然后用num1被剔除的元素去配对num2从后往前的元素，这里可以发现，num2最终剩下的元素一定是原来的一个后缀，所以在剔除的时候，可以用左右指针。
+   >
+   > ```java
+   > class Solution {
+   >     public int[] advantageCount(int[] nums1, int[] nums2) {
+   >         int len = nums1.length;
+   >         Integer[] idx1 = new Integer[len];
+   >         Integer[] idx2 = new Integer[len];
+   >         for(int i=0;i<len;i++){
+   >             idx1[i] = i;
+   >             idx2[i] = i;
+   >         }
+   >         Arrays.sort(idx1, (i,j)->nums1[i]-nums1[j]);
+   >         Arrays.sort(idx2, (i,j)->nums2[i]-nums2[j]);
+   >         int left = 0, right=len-1;
+   >         int[] ans = new int[len]; 
+   >         for(int i=0;i<len;i++){
+   >             if(nums1[idx1[i]]>nums2[idx2[left]]){
+   >                 ans[idx2[left++]]=nums1[idx1[i]];
+   >             }else{
+   >                 ans[idx2[right--]] = nums1[idx1[i]];
+   >             }
+   >         }
+   >         return ans;
+   >     }
+   > }
+   > ```
+   >
+   > 
    
 
 ## 三、前缀和
@@ -1054,4 +977,20 @@ int right_bound(int[] nums, int target) {
    > 有边界自然是每堆香蕉中的最大值
    >
    > 向上取整可以写成 `(each+mid-1)/mid`
+
+## 十、常数时间删除
+
+
+
+1. [O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)
+
+   > 实现RandomizedSet 类：
+   >
+   > RandomizedSet() 初始化 RandomizedSet 对象
+   > bool insert(int val) 当元素 val 不存在时，向集合中插入该项，并返回 true ；否则，返回 false 。
+   > bool remove(int val) 当元素 val 存在时，从集合中移除该项，并返回 true ；否则，返回 false 。
+   > int getRandom() 随机返回现有集合中的一项（测试用例保证调用此方法时集合中至少存在一个元素）。每个元素应该有 相同的概率 被返回。
+   > 你必须实现类的所有函数，并满足每个函数的 平均 时间复杂度为 O(1) 。
+   >
+   > 
 
