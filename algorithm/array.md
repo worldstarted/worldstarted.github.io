@@ -980,8 +980,6 @@ int right_bound(int[] nums, int target) {
 
 ## 十、常数时间删除
 
-
-
 1. [O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)
 
    > 实现RandomizedSet 类：
@@ -992,5 +990,80 @@ int right_bound(int[] nums, int target) {
    > int getRandom() 随机返回现有集合中的一项（测试用例保证调用此方法时集合中至少存在一个元素）。每个元素应该有 相同的概率 被返回。
    > 你必须实现类的所有函数，并满足每个函数的 平均 时间复杂度为 O(1) 。
    >
+   > `思路`
+   >
+   > 插入删除，常数操作的数据结构一般是栈
+   >
+   > 获取随机元素一般是数组或哈希表
+
+2. [黑名单中的随机数](https://leetcode.cn/problems/random-pick-with-blacklist/)
+
+   > 给定一个整数 n 和一个 无重复 黑名单整数数组 blacklist 。设计一种算法，从 [0, n - 1] 范围内的任意整数中选取一个 未加入 黑名单 blacklist 的整数。任何在上述范围内且不在黑名单 blacklist 中的整数都应该有 同等的可能性 被返回。
+   >
+   > 优化你的算法，使它最小化调用语言 内置 随机函数的次数。
+   >
+   > 实现 Solution 类:
+   >
+   > Solution(int n, int[] blacklist) 初始化整数 n 和被加入黑名单 blacklist 的整数
+   > int pick() 返回一个范围为 [0, n - 1] 且不在黑名单 blacklist 中的随机整数
+   >
    > 
 
+## 十一、元素去重
+
+> ==单调栈==
+>
+>```java
+> while(!stack.empty()&&stack.top()<ele)
+>  stack.pop();
+>    stack.push(ele);
+> ```
+
+1. [不同字符的最小子序列](https://leetcode.cn/problems/smallest-subsequence-of-distinct-characters/)
+
+   > 返回 `s` 字典序最小的子序列，该子序列包含 `s` 的所有不同字符，且只包含一次。
+   >
+   > `思路`
+   >
+   > 字典序最小，可以看成去掉s[i]>s[i+1]的最小i，用单调栈来维护
+   >
+   > 同时，由于要包含所有不同字符，需要注意
+   >
+   > - 如果字符已经存在在栈中，则不能加入，需要记录所有字符是否入栈
+   > - 弹出时，如果该字符在以后都不会出现了，就不能弹出。因此需要记录字符的剩余数量。
+   >
+   > ```java
+   > 
+   > public String smallestSubsequence(String s) {
+   >     boolean[] vis = new boolean[26];
+   >     int len = s.length();
+   >     int[] cnt = new int[26];
+   >     for(int i=0;i<len;i++){
+   >         cnt[s.charAt(i)-'a']++;
+   >     }
+   >     StringBuilder sb = new StringBuilder();
+   >     for(int i=0;i<len;i++){
+   >         char c = s.charAt(i);
+   >         if(!vis[c-'a']){         while(sb.length()>0&&sb.charAt(sb.length()-1)>c&&cnt[sb.charAt(sb.length()-1)-'a']-1>=0){
+   >                 vis[sb.charAt(sb.length()-1)-'a']=false;
+   >                 sb.deleteCharAt(sb.length()-1);
+   >             }
+   >             sb.append(c);
+   >             vis[c-'a']=true;
+   >         }
+   >         cnt[c-'a'] -= 1;
+   >     }
+   >     return sb.toString();
+   > }
+   > 
+   > ```
+   >
+   > 
+
+2. [去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
+
+   > 给你一个字符串 `s` ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 **返回结果的字典序最小**（要求不能打乱其他字符的相对位置）。
+   >
+   > `思路`
+   >
+   > 解法同上`不同字符的最小子序列`
