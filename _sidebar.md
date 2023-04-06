@@ -5,6 +5,8 @@
     * [第一章 链表](/algorithm/linkNode.md)
     * [第二章 数组](/algorithm/array.md)
     * [第三章 二叉树](/algorithm/tree.md)
+    * [第四章 图论](/algorithm/graph.md)
+    * [特别章节 困难算法](/algorithm/Have_difficulty.md)
 * [java](/java/)
     * [Java 核心技术](/java/Java_Core_Tech.md)
     * [spring](/java/spring%206.md)
